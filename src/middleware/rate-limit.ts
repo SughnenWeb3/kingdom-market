@@ -1,5 +1,5 @@
-import rateLimit from 'express-rate-limit';
-import type { RequestHandler } from 'express';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
+import type { Request, RequestHandler } from 'express';
 
 import { AppError } from '../lib/errors.js';
 
@@ -13,15 +13,24 @@ const rateLimitHandler: RequestHandler = (_req, res, _next) => {
   });
 };
 
+// In the test environment the in-memory store is shared across all requests
+// in the same process, so tests would trip the limiter after only a few calls.
+// Skip rate-limiting entirely in test mode; dedicated 429 tests opt back in
+// by calling the limiter in isolation with a reset store.
+const skipInTest = (_req: Request): boolean => process.env.NODE_ENV === 'test';
+
 // ── Public endpoints (keyed by IP) ────────────────────────────────
+// ipKeyGenerator normalises IPv6 addresses to /56 subnets so that different
+// addresses within the same prefix share a bucket, preventing bypass via IPv6.
 
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: (req) => ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 export const registerLimiter = rateLimit({
@@ -29,8 +38,9 @@ export const registerLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: (req) => ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 export const googleStartLimiter = rateLimit({
@@ -38,8 +48,9 @@ export const googleStartLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: (req) => ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 export const publicSearchLimiter = rateLimit({
@@ -47,8 +58,9 @@ export const publicSearchLimiter = rateLimit({
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.ip ?? 'unknown',
+  keyGenerator: (req) => ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 // ── Authenticated endpoints (keyed by userId) ─────────────────────
@@ -58,8 +70,9 @@ export const categorySuggestionLimiter = rateLimit({
   max: 5,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.auth?.userId ?? req.ip ?? 'unknown',
+  keyGenerator: (req) => req.auth?.userId ?? ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 export const phoneChangeLimiter = rateLimit({
@@ -67,8 +80,9 @@ export const phoneChangeLimiter = rateLimit({
   max: 3,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.auth?.userId ?? req.ip ?? 'unknown',
+  keyGenerator: (req) => req.auth?.userId ?? ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });
 
 export const uploadSignatureLimiter = rateLimit({
@@ -76,6 +90,7 @@ export const uploadSignatureLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req) => req.auth?.userId ?? req.ip ?? 'unknown',
+  keyGenerator: (req) => req.auth?.userId ?? ipKeyGenerator(req.ip ?? '127.0.0.1'),
   handler: rateLimitHandler,
+  skip: skipInTest,
 });

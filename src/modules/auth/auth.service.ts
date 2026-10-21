@@ -6,6 +6,7 @@ import { comparePassword, hashPassword, validatePassword, compareAgainstDummy } 
 import {
   createSession,
   revokeSession,
+  revokeAllUserSessions,
   hashToken,
 } from '../../lib/session.js';
 import { generateCsrfToken } from '../../lib/csrf.js';
@@ -115,6 +116,7 @@ export const login = async (
   }
 
   // New session on every login; revoke all prior sessions for this user.
+  await revokeAllUserSessions(user.id);
   const { token, tokenHash } = await createSession(user.id);
   const csrfToken = generateCsrfToken(tokenHash);
 
