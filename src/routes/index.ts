@@ -9,8 +9,9 @@ export const createApiRouter = (): Router => {
     response.status(200).json(getLiveStatus());
   });
 
-  router.get('/health/ready', (_request, response) => {
-    response.status(200).json(getReadyStatus());
+  router.get('/health/ready', async (_request, response) => {
+    const result = await getReadyStatus();
+    response.status(result.status === 'ready' ? 200 : 503).json(result);
   });
 
   return router;
