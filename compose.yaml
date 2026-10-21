@@ -1,8 +1,9 @@
 services:
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     ports:
-      - '5433:5432'
+      - '5435:5432'
     environment:
       POSTGRES_DB: kingdom_market
       POSTGRES_USER: kingdom_market
@@ -14,11 +15,14 @@ services:
       retries: 10
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kingdom_market_network
 
   db-test:
     image: postgres:17-alpine
+    restart: unless-stopped
     ports:
-      - '5434:5432'
+      - '5436:5432'
     environment:
       POSTGRES_DB: kingdom_market_test
       POSTGRES_USER: kingdom_market
@@ -30,6 +34,12 @@ services:
       retries: 10
     tmpfs:
       - /var/lib/postgresql/data
+    networks:
+      - kingdom_market_network
 
 volumes:
   postgres-data:
+
+networks:
+  kingdom_market_network:
+    driver: bridge
