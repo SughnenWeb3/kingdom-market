@@ -13,6 +13,9 @@ const redactedPaths = [
   '*.phoneNumber',
   '*.whatsappNumber',
   '*.proposedPhone',
+  '*.CLOUDINARY_API_SECRET',
+  '*.cloudinaryApiSecret',
+  '*.signature',
 ];
 
 export const logger = pino({

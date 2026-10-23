@@ -35,11 +35,11 @@ Every phase must leave `npm run lint`, `npm run typecheck`, and `npm test` green
 - [ ] Tests: duplicate email, generic login error, timing-path parity, session expiry/revocation, CSRF rejection, rate limit 429, no secrets in logs
 
 ## Phase 4: Providers
-- [ ] `POST/GET/PATCH /providers/me`, public profile mapper, contact endpoint
-- [ ] Phone normalization; `phoneNumber` rejected on PATCH
-- [ ] Phone-change request endpoint + `ops:phone-change` script
-- [ ] Cloudinary wrapper + `POST /uploads/signature` + profile image verification (mocked in tests)
-- [ ] Tests: one profile per user, public response has no contact data, contact requires auth, pending change leaves current number intact, single pending request, ops script approve/reject
+- [x] `POST/GET/PATCH /providers/me`, public profile mapper, contact endpoint
+- [x] Phone normalization; `phoneNumber` rejected on PATCH
+- [x] Phone-change request endpoint + `ops:phone-change` script
+- [x] Cloudinary wrapper + `POST /uploads/signature` + profile image verification (mocked in tests)
+- [x] Tests: one profile per user, public response has no contact data, contact requires auth, pending change leaves current number intact, single pending request, ops script approve/reject
 
 ## Phase 5: Listings and media
 - [ ] Create/update with pricing and type-specific validation
