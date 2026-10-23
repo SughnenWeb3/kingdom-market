@@ -10,6 +10,9 @@ export default defineConfig({
     // Separate unit and integration runs via npm scripts.
     // Integration tests need a real PostgreSQL test database.
     setupFiles: ['tests/setup.ts'],
+    // bcrypt cost 12 can exceed Vitest's 5s default on slower CI hosts,
+    // especially after the database-backed auth integration tests.
+    testTimeout: 15_000,
     // All integration tests share a single test database, so they must not
     // run in parallel at the file level (truncateAll would race).
     fileParallelism: false,

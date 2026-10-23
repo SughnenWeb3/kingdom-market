@@ -5,34 +5,34 @@ Work **one phase at a time**. At the end of each phase: all checks pass, summari
 Every phase must leave `npm run lint`, `npm run typecheck`, and `npm test` green.
 
 ## Phase 1: Project setup
-- [ ] `npm init`, TypeScript strict config, ESM, ESLint, Prettier, `.nvmrc`, `engines`
-- [ ] Folder structure from PRD §4 (empty module folders with placeholder files are fine)
-- [ ] `compose.yaml` with `db` (5433) and `db-test` (5434); `.env.example`; `.gitignore`
-- [ ] `src/config/env.ts` (Zod, fail fast), `src/lib/logger.ts`, `src/lib/errors.ts`
-- [ ] `src/app.ts` (`createApp`) and `src/server.ts` (graceful shutdown)
-- [ ] `/health/live`, `/health/ready` (readiness stub until Prisma exists)
-- [ ] Scripts in `package.json` per TRD §18
+- [x] `npm init`, TypeScript strict config, ESM, ESLint, Prettier, `.nvmrc`, `engines`
+- [x] Folder structure from PRD §4 (empty module folders with placeholder files are fine)
+- [x] `compose.yaml` with `db` (5433) and `db-test` (5434); `.env.example`; `.gitignore`
+- [x] `src/config/env.ts` (Zod, fail fast), `src/lib/logger.ts`, `src/lib/errors.ts`
+- [x] `src/app.ts` (`createApp`) and `src/server.ts` (graceful shutdown)
+- [x] `/health/live`, `/health/ready` (readiness stub until Prisma exists)
+- [x] Scripts in `package.json` per TRD §18
 
 **Done when:** `docker compose up -d db` works, `npm run dev` serves `/api/v1/health/live`, CI-equivalent commands pass.
 
 ## Phase 2: Database
-- [ ] `prisma.config.ts`, schema from PRD §7, `src/lib/prisma.ts` (adapter-pg)
-- [ ] Initial migration, plus raw-SQL migration for the pending-phone partial unique index
-- [ ] `seed.ts`: idempotent category upsert (list from PRD §12, slugs stable)
-- [ ] `src/lib/locations.ts` (state constants)
-- [ ] Readiness endpoint now checks the database
-- [ ] Test harness: test DB, migrate, truncate helper, first integration test
+- [x] `prisma.config.ts`, schema from PRD §7, `src/lib/prisma.ts` (adapter-pg)
+- [x] Initial migration, plus raw-SQL migration for the pending-phone partial unique index
+- [x] `seed.ts`: idempotent category upsert (list from PRD §12, slugs stable)
+- [x] `src/lib/locations.ts` (state constants)
+- [x] Readiness endpoint now checks the database
+- [x] Test harness: test DB, migrate, truncate helper, first integration test
 
 **Done when:** a clean database migrates and seeds from scratch; re-running seed changes nothing.
 
 ## Phase 3: Auth and security foundation
-- [ ] Error handler, validate middleware, request-id, helmet, CORS, rate-limit middleware
-- [ ] Email normalization, password validation (byte-length), bcrypt service
-- [ ] Session create/lookup/revoke, cookie handling, idle and absolute expiry, hourly purge
-- [ ] CSRF middleware (Origin + HMAC token)
-- [ ] `register`, `login`, `logout`, `me`
-- [ ] Google OIDC flow with PKCE, state, nonce (mock at the wrapper in tests)
-- [ ] Tests: duplicate email, generic login error, timing-path parity, session expiry/revocation, CSRF rejection, rate limit 429, no secrets in logs
+- [x] Error handler, validate middleware, request-id, helmet, CORS, rate-limit middleware
+- [x] Email normalization, password validation (byte-length), bcrypt service
+- [x] Session create/lookup/revoke, cookie handling, idle and absolute expiry, hourly purge
+- [x] CSRF middleware (Origin + HMAC token)
+- [x] `register`, `login`, `logout`, `me`
+- [x] Google OIDC flow with PKCE, state, nonce (mock at the wrapper in tests)
+- [x] Tests: duplicate email, generic login error, timing-path parity, session expiry/revocation, CSRF rejection, rate limit 429, no secrets in logs
 
 ## Phase 4: Providers
 - [ ] `POST/GET/PATCH /providers/me`, public profile mapper, contact endpoint

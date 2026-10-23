@@ -3,7 +3,14 @@ import { pinoHttp } from 'pino-http';
 
 import { env } from '../config/env.js';
 
-const redactedPaths = [
+export const redactedPaths = [
+  'password',
+  'passwordHash',
+  'token',
+  'tokenHash',
+  'phoneNumber',
+  'whatsappNumber',
+  'proposedPhone',
   'req.headers.cookie',
   'req.headers.authorization',
   '*.password',
