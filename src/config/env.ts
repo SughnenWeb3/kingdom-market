@@ -20,6 +20,13 @@ const environmentSchema = z.object({
   GOOGLE_CALLBACK_URL: z.url().optional(),
   CLOUDINARY_UPLOAD_PRESET: z.string().min(1).default('km_signed'),
   CLOUDINARY_UPLOAD_FOLDER_ROOT: z.string().min(1).default('km'),
+  CLOUDINARY_CLOUD_NAME: z.string().min(1),
+  CLOUDINARY_API_KEY: z.string().min(1),
+  CLOUDINARY_API_SECRET: z.string().min(1),
+  // These deliberately have no defaults: they must mirror the signed preset.
+  CLOUDINARY_MAX_FILE_BYTES: z.coerce.number().int().positive(),
+  CLOUDINARY_MAX_WIDTH: z.coerce.number().int().positive(),
+  CLOUDINARY_MAX_HEIGHT: z.coerce.number().int().positive(),
 });
 
 const parsedEnvironment = environmentSchema.safeParse(process.env);
@@ -32,3 +39,16 @@ if (!parsedEnvironment.success) {
 }
 
 export const env = parsedEnvironment.data;
+
+export const requireCloudinaryConfig = (): Pick<typeof env,
+  'CLOUDINARY_CLOUD_NAME' | 'CLOUDINARY_API_KEY' | 'CLOUDINARY_API_SECRET' |
+  'CLOUDINARY_MAX_FILE_BYTES' | 'CLOUDINARY_MAX_WIDTH' | 'CLOUDINARY_MAX_HEIGHT'> => {
+  return {
+    CLOUDINARY_CLOUD_NAME: env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_MAX_FILE_BYTES: env.CLOUDINARY_MAX_FILE_BYTES,
+    CLOUDINARY_MAX_WIDTH: env.CLOUDINARY_MAX_WIDTH,
+    CLOUDINARY_MAX_HEIGHT: env.CLOUDINARY_MAX_HEIGHT,
+  };
+};
