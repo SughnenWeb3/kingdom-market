@@ -7,11 +7,13 @@ type ZodSchema = {
   safeParse: (data: unknown) => { success: boolean; data?: unknown; error?: ZodError };
 };
 
-// Middleware factory: validate req.body against a Zod schema.
+// Middleware factory: validate req.body (default) or req.query against a Zod schema.
 // On failure, returns 400 VALIDATION_ERROR with field-level details.
-export const validate = (schema: ZodSchema): RequestHandler => {
+// For 'query' target, the parsed result is stored on req.validatedQuery (req.query is read-only in Express 5).
+export const validate = (schema: ZodSchema, target: 'body' | 'query' = 'body'): RequestHandler => {
   return (req, _res, next) => {
-    const result = schema.safeParse(req.body);
+    const input = target === 'query' ? req.query : req.body;
+    const result = schema.safeParse(input);
 
     if (!result.success) {
       const details: ErrorDetail[] = result.error!.issues.map((issue) => ({
@@ -22,8 +24,12 @@ export const validate = (schema: ZodSchema): RequestHandler => {
       return;
     }
 
-    // Replace req.body with the parsed and transformed data.
-    req.body = result.data;
+    if (target === 'query') {
+      // req.query is a getter-only property in Express 5; store the parsed result separately.
+      req.validatedQuery = result.data;
+    } else {
+      req.body = result.data;
+    }
     next();
   };
 };

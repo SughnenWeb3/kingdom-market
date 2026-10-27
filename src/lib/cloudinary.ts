@@ -84,6 +84,23 @@ export const verifyProfileAsset = async (userId: string, publicId: string): Prom
   return asset;
 };
 
+export const verifyListingAsset = async (userId: string, publicId: string): Promise<CloudinaryAsset> => {
+  const expectedPrefix = `${getUploadFolder(userId, 'LISTING')}/`;
+  if (!publicId.startsWith(expectedPrefix)) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Listing image is not in your upload folder');
+  }
+  const asset = await getAsset(publicId);
+  if (!asset) throw new AppError(400, 'VALIDATION_ERROR', 'Listing image was not found');
+  const config = requireCloudinaryConfig();
+  if (!['jpg', 'png', 'webp'].includes(asset.format.toLowerCase())) {
+    throw new AppError(415, 'UNSUPPORTED_MEDIA', 'Listing image format is not supported');
+  }
+  if (asset.bytes > config.CLOUDINARY_MAX_FILE_BYTES || asset.width > config.CLOUDINARY_MAX_WIDTH || asset.height > config.CLOUDINARY_MAX_HEIGHT) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Listing image exceeds configured upload limits');
+  }
+  return asset;
+};
+
 export const destroyAsset = async (publicId: string): Promise<void> => {
   await client().uploader.destroy(publicId, { resource_type: 'image' });
 };
