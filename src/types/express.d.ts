@@ -4,6 +4,7 @@ declare module 'express-serve-static-core' {
     requestId: string;
     auth?: AuthContext;
     sessionTokenHash?: string;
+    validatedQuery?: unknown;
   }
 }
 

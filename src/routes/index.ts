@@ -6,6 +6,7 @@ import { csrfMiddleware } from '../middleware/csrf.js';
 import { createAuthRouter } from '../modules/auth/auth.routes.js';
 import { createProviderRouter } from '../modules/providers/provider.routes.js';
 import { createUploadRouter } from '../modules/uploads/upload.routes.js';
+import { createListingRouter } from '../modules/listings/listing.routes.js';
 
 export const createApiRouter = (): Router => {
   const router = Router();
@@ -26,6 +27,7 @@ export const createApiRouter = (): Router => {
   router.use('/auth', loadSession, csrfMiddleware, createAuthRouter());
   router.use('/providers', loadSession, csrfMiddleware, createProviderRouter());
   router.use('/uploads', loadSession, csrfMiddleware, createUploadRouter());
+  router.use('/listings', loadSession, csrfMiddleware, createListingRouter());
 
   return router;
 };
