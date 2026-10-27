@@ -18,7 +18,7 @@ export const createAuthRouter = (): Router => {
   const router = Router();
 
   // Public routes (rate-limited, CSRF origin-checked by global middleware)
-  router.post('/register', registerLimiter, validate(registerSchema), register);
+  router.post('/register', register);
   router.post('/login', loginLimiter, validate(loginSchema), login);
 
   // Google OIDC flow

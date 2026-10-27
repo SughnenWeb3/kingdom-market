@@ -8,7 +8,7 @@ export const registerSchema = z.object({
     .email('Invalid email format'),
   password: z
     .string()
-    .min(12, 'Password must be at least 12 characters long')
+    .min(6, 'Password must be at least 6ch aracters long')
     .max(72, 'Password must be at most 72 bytes')
     .refine((v) => v.trim().length > 0, 'Password cannot be whitespace-only'),
   displayName: z.string().min(1).max(60).optional(),
